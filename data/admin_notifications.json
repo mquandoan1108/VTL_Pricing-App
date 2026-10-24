@@ -1,0 +1,17 @@
+[
+  {
+    "id": "notif-1792814385382",
+    "type": "ACCOUNT_REGISTRATION_REQUEST",
+    "targetAdmin": "doanminhquan1108@gmail.com",
+    "requestedUser": {
+      "email": "testuser.vt@gmail.com",
+      "fullName": "Trần Văn Test",
+      "department": "Phòng Điều hành Kho",
+      "createdAt": "2026-10-24T03:59:45.382Z"
+    },
+    "title": "[Yêu cầu phê duyệt tài khoản mới] Trần Văn Test (testuser.vt@gmail.com)",
+    "body": "Người dùng Trần Văn Test (testuser.vt@gmail.com) vừa đăng ký tài khoản tính giá cước Viettel Logistics và cần Quản trị viên doanminhquan1108@gmail.com xác nhận để mở quyền truy cập.",
+    "status": "unread",
+    "timestamp": "2026-10-24T03:59:45.382Z"
+  }
+]

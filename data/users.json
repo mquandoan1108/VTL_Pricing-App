@@ -1,0 +1,153 @@
+[
+  {
+    "id": "u-1",
+    "email": "p.oanh1999@gmail.com",
+    "fullName": "Phương Oanh",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Kinh doanh Logistics",
+    "updatedAt": "2026-10-24T03:59:40.367Z"
+  },
+  {
+    "id": "u-2",
+    "email": "thaovi1009ll@gmail.com",
+    "fullName": "Thảo Vi",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Điều hành Vận tải"
+  },
+  {
+    "id": "u-3",
+    "email": "haiyen0355@gmail.com",
+    "fullName": "Hải Yến",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Chăm sóc Khách hàng"
+  },
+  {
+    "id": "u-4",
+    "email": "binhkhanh13.1@gmail.com",
+    "fullName": "Khánh Bình",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Kinh doanh Miền Nam"
+  },
+  {
+    "id": "u-5",
+    "email": "thanhtuyen08022001@gmail.com",
+    "fullName": "Thanh Tuyền",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Kế hoạch Vận tải"
+  },
+  {
+    "id": "u-6",
+    "email": "trucan0397@gmail.com",
+    "fullName": "Trúc An",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Kinh doanh Tuyến Trục"
+  },
+  {
+    "id": "u-7",
+    "email": "385386776dang@gmail.com",
+    "fullName": "Hải Đăng",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Quản lý Đội xe"
+  },
+  {
+    "id": "u-8",
+    "email": "doanminhquan1108@gmail.com",
+    "fullName": "Minh Quân",
+    "role": "admin",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-15T00:00:00.000Z",
+    "department": "Quản trị Hệ thống Logistics"
+  },
+  {
+    "id": "u-9",
+    "email": "ntmcuong1008@gmail.com",
+    "fullName": "Mạnh Cường",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Điều hành Bắc - Nam"
+  },
+  {
+    "id": "u-10",
+    "email": "congquang137@gmail.com",
+    "fullName": "Công Quang",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Phòng Cước & Hợp đồng"
+  },
+  {
+    "id": "u-11",
+    "email": "phattranvo95@gmail.com",
+    "fullName": "Trần Phát",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Vận hành Kho Cảng"
+  },
+  {
+    "id": "u-12",
+    "email": "buithanh.viettel@gmail.com",
+    "fullName": "Tất Thành",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Khối Logistics Nội bộ"
+  },
+  {
+    "id": "u-13",
+    "email": "duysteven31994@gmail.com",
+    "fullName": "Quang Duy",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Kinh doanh Vận chuyển Cont"
+  },
+  {
+    "id": "u-14",
+    "email": "itranducbinh@gmail.com",
+    "fullName": "Đức Bình",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Kỹ thuật Xe & Giám sát"
+  },
+  {
+    "id": "u-15",
+    "email": "imphantienloc@gmail.com",
+    "fullName": "Tiến Lộc",
+    "role": "user",
+    "status": "active",
+    "password": "vhkd@123",
+    "createdAt": "2026-10-20T08:00:00.000Z",
+    "department": "Điều phối Xe Đông Lạnh"
+  }
+]
