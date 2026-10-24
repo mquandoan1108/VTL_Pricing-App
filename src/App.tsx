@@ -11,6 +11,7 @@ import { HistoryDrawer, HistoryItem } from './components/HistoryDrawer';
 import { PhuLucViewerModal } from './components/PhuLucViewerModal';
 import { LoginView } from './components/auth/LoginView';
 import { AdminUserManagementModal } from './components/auth/AdminUserManagementModal';
+import { PersonnelTableView } from './components/PersonnelTableView';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CalculationInput, VehicleOption, VehicleCategory } from './types/logistics';
 import {
@@ -26,6 +27,7 @@ import {
   FileSpreadsheet,
   CheckCircle2,
   ShieldCheck,
+  Users,
 } from 'lucide-react';
 
 function AppContent() {
@@ -55,7 +57,7 @@ function AppContent() {
   });
 
   // Modal / Drawer visibility states
-  const [activeTab, setActiveTab] = useState<'calculator' | 'pvoil'>('calculator');
+  const [activeTab, setActiveTab] = useState<'calculator' | 'pvoil' | 'personnel'>('calculator');
   const [isApiCheckerOpen, setIsApiCheckerOpen] = useState(false);
   const [isPetrolimexCheckerOpen, setIsPetrolimexCheckerOpen] = useState(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
@@ -65,6 +67,7 @@ function AppContent() {
   const [isPhuLucOpen, setIsPhuLucOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [usersCount, setUsersCount] = useState(15);
   const [phuLucInitialTab, setPhuLucInitialTab] = useState<VehicleCategory>('truck_dry');
   const [isRefreshingFuel, setIsRefreshingFuel] = useState(false);
 
@@ -107,13 +110,14 @@ function AppContent() {
       });
   }, []);
 
-  // Fetch pending registrations for Admin
+  // Fetch pending registrations and total user count for Admin
   const fetchPendingCount = useCallback(async () => {
     if (!isAdmin) return;
     try {
       const res = await fetch('/api/auth/users');
       const data = await res.json();
       if (data.success && data.users) {
+        setUsersCount(data.users.length);
         const pending = data.users.filter((u: any) => u.status === 'pending');
         setPendingCount(pending.length);
       }
@@ -255,6 +259,22 @@ function AppContent() {
               <Fuel className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Biểu Giá Xăng Dầu PVOIL</span>
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => setActiveTab('personnel')}
+                className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                  activeTab === 'personnel'
+                    ? 'bg-[#EE0033] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-stone-50'
+                }`}
+              >
+                <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>Danh Sách Nhân Sự ({usersCount})</span>
+                {pendingCount > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse ml-0.5"></span>
+                )}
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto justify-end">
@@ -344,6 +364,15 @@ function AppContent() {
               onSelectPrice={handleSelectPrice}
               onRefreshPrices={handleRefreshPrices}
               isRefreshing={isRefreshingFuel}
+            />
+          </div>
+        )}
+
+        {/* Tab 3: Personnel Management Table (Admin only) */}
+        {activeTab === 'personnel' && isAdmin && (
+          <div className="space-y-4">
+            <PersonnelTableView
+              onOpenCreateUserModal={() => setIsAdminModalOpen(true)}
             />
           </div>
         )}

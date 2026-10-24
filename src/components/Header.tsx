@@ -133,13 +133,18 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   onClick={onOpenAdminModal}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg sm:rounded-xl transition shadow-xs relative"
-                  title="Quản trị người dùng & Phê duyệt tài khoản"
+                  title="Danh sách nhân sự Viettel Logistics & Quản trị tài khoản"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="hidden sm:inline">Quản trị TK</span>
-                  {pendingCount > 0 && (
+                  <Users className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden sm:inline">Danh sách nhân sự</span>
+                  <span className="sm:hidden">Nhân sự</span>
+                  {pendingCount > 0 ? (
                     <span className="w-4 h-4 rounded-full bg-red-600 text-white text-[10px] flex items-center justify-center font-black animate-pulse">
                       {pendingCount}
+                    </span>
+                  ) : (
+                    <span className="px-1.5 py-0.2 rounded-full bg-slate-700 text-slate-200 text-[9px] font-bold">
+                      15
                     </span>
                   )}
                 </button>
