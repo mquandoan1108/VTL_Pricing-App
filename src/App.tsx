@@ -13,7 +13,8 @@ import { LoginView } from './components/auth/LoginView';
 import { AdminUserManagementModal } from './components/auth/AdminUserManagementModal';
 import { PersonnelTableView } from './components/PersonnelTableView';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { CalculationInput, VehicleOption, VehicleCategory } from './types/logistics';
+import { CalculationInput, VehicleOption, VehicleCategory, PetrolimexProduct } from './types/logistics';
+import { PVOIL_PRODUCTS } from './data/pvoilData';
 import {
   BASE_DIESEL_PRICE,
   getEffectiveVehicleOptions,
@@ -47,7 +48,7 @@ function AppContent() {
     fromProvinceId: 'SG',
     toProvinceId: 'HN', // Mẫu Nam -> Bắc (1.720km)
     km: 1720,
-    currentDieselPrice: 29200, // Dầu DO 0,05S-II từ máy chủ PVOIL (103.21.120.100)
+    currentDieselPrice: 30240, // Dầu DO 0,05S-II trực tiếp từ link https://www.pvoil.com.vn/tin-gia-xang-dau
     baseDieselPrice: BASE_DIESEL_PRICE, // 21860
     coolingHours: 0,
     retentionDays: 0,
@@ -71,6 +72,12 @@ function AppContent() {
   const [phuLucInitialTab, setPhuLucInitialTab] = useState<VehicleCategory>('truck_dry');
   const [isRefreshingFuel, setIsRefreshingFuel] = useState(false);
 
+  // Live PVOIL state from https://www.pvoil.com.vn/tin-gia-xang-dau
+  const [pvoilProducts, setPvoilProducts] = useState<PetrolimexProduct[]>(PVOIL_PRODUCTS);
+  const [pvoilEffectiveTime, setPvoilEffectiveTime] = useState<string>('Giá điều chỉnh lúc 15:00 ngày 29/10/2026');
+  const [pvoilDateOptions, setPvoilDateOptions] = useState<Array<{ value: string; label: string }>>([]);
+  const [selectedPvoilDate, setSelectedPvoilDate] = useState<string>('');
+
   // History state
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     try {
@@ -90,25 +97,52 @@ function AppContent() {
     }
   }, [history]);
 
-  // Lấy dữ liệu giá dầu trực tiếp từ API PVOIL khi khởi động
-  useEffect(() => {
-    fetch('/api/pvoil/prices')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.products) {
-          const do05 = data.products.find((p: any) => p.code.includes('0,05S'));
-          if (do05) {
-            setInput((prev) => ({
-              ...prev,
-              currentDieselPrice: prev.petrolimexZone === 1 ? do05.zone1 : do05.zone2,
-            }));
-          }
+  // Tải dữ liệu giá dầu trực tiếp từ trang web PVOIL (https://www.pvoil.com.vn/tin-gia-xang-dau)
+  const fetchPvoil = useCallback(async (dateParam?: string, forceRefresh = false) => {
+    setIsRefreshingFuel(true);
+    try {
+      const url = new URL('/api/pvoil/prices', window.location.origin);
+      if (dateParam) url.searchParams.set('date', dateParam);
+      if (forceRefresh) url.searchParams.set('refresh', 'true');
+      const res = await fetch(url.toString());
+      const data = await res.json();
+      if (data && data.success && data.products) {
+        const mappedProducts: PetrolimexProduct[] = data.products.map((p: any) => ({
+          id: p.id,
+          code: p.code,
+          name: p.name,
+          unit: p.unit,
+          zone1Price: p.zone1,
+          zone2Price: p.zone2,
+          priceDiff: p.diff,
+          adjustmentDiff: p.adjustmentDiff,
+          isPrimaryFuelForLogistics: p.primary,
+          description: p.description,
+        }));
+        setPvoilProducts(mappedProducts);
+        if (data.effectiveTime) setPvoilEffectiveTime(data.effectiveTime);
+        if (data.dateOptions && data.dateOptions.length > 0) setPvoilDateOptions(data.dateOptions);
+        if (data.currentDate) setSelectedPvoilDate(data.currentDate);
+
+        // Cập nhật giá dầu DO 0,05S-II chuẩn vào công thức tính cước
+        const primary = mappedProducts.find((p) => p.isPrimaryFuelForLogistics) || mappedProducts[0];
+        if (primary) {
+          setInput((prev) => ({
+            ...prev,
+            currentDieselPrice: prev.petrolimexZone === 1 ? primary.zone1Price : primary.zone2Price,
+          }));
         }
-      })
-      .catch(() => {
-        // Fallback default 29.200đ is already preset in state
-      });
+      }
+    } catch (err) {
+      console.error('Lỗi nạp dữ liệu PVOIL:', err);
+    } finally {
+      setTimeout(() => setIsRefreshingFuel(false), 300);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchPvoil();
+  }, [fetchPvoil]);
 
   // Fetch pending registrations and total user count for Admin
   const fetchPendingCount = useCallback(async () => {
@@ -159,32 +193,22 @@ function AppContent() {
   };
 
   const handleSelectZone = (zone: 1 | 2) => {
+    const primary = pvoilProducts.find((p) => p.isPrimaryFuelForLogistics) || pvoilProducts[0];
+    const newPrice = zone === 1 ? (primary ? primary.zone1Price : 30240) : (primary ? primary.zone2Price : 30840);
     setInput((prev) => ({
       ...prev,
       petrolimexZone: zone,
-      currentDieselPrice: zone === 1 ? 29200 : 29780,
+      currentDieselPrice: newPrice,
     }));
   };
 
   const handleRefreshPrices = async () => {
-    setIsRefreshingFuel(true);
-    try {
-      const res = await fetch('/api/pvoil/prices');
-      const data = await res.json();
-      if (data && data.products) {
-        const do05 = data.products.find((p: any) => p.code.includes('0,05S'));
-        if (do05) {
-          setInput((prev) => ({
-            ...prev,
-            currentDieselPrice: prev.petrolimexZone === 1 ? do05.zone1 : do05.zone2,
-          }));
-        }
-      }
-    } catch {
-      // fallback
-    } finally {
-      setTimeout(() => setIsRefreshingFuel(false), 500);
-    }
+    await fetchPvoil(selectedPvoilDate, true);
+  };
+
+  const handleSelectDate = async (dateVal: string) => {
+    setSelectedPvoilDate(dateVal);
+    await fetchPvoil(dateVal, false);
   };
 
   const handleSaveToHistory = () => {
@@ -360,6 +384,12 @@ function AppContent() {
             <PvoilTable
               currentDieselPrice={input.currentDieselPrice}
               selectedZone={input.petrolimexZone}
+              products={pvoilProducts}
+              effectiveTime={pvoilEffectiveTime}
+              sourceUrl="https://www.pvoil.com.vn/tin-gia-xang-dau"
+              dateOptions={pvoilDateOptions}
+              selectedDate={selectedPvoilDate}
+              onSelectDate={handleSelectDate}
               onSelectZone={handleSelectZone}
               onSelectPrice={handleSelectPrice}
               onRefreshPrices={handleRefreshPrices}

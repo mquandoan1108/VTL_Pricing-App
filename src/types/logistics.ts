@@ -55,6 +55,7 @@ export interface PetrolimexProduct {
   priceDiff: number;
   isPrimaryFuelForLogistics?: boolean;
   description?: string;
+  adjustmentDiff?: string;
 }
 
 export interface CalculationInput {
